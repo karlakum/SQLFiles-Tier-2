@@ -149,11 +149,49 @@ QUESTIONS:
 The output of facility name and total revenue, sorted by revenue. Remember
 that there's a different cost for guests and members! */
 
+query10 = '''
+SELECT f.name AS facilities, SUM(CASE 
+WHEN memid = 0 THEN slots * guestcost
+ELSE slots * membercost
+END) AS total_revenue
+FROM Bookings as b
+INNER JOIN Facilities as f
+ON b.facid = f.facid
+GROUP BY f.name
+HAVING total_revenue < 1000
+ORDER BY total_revenue;
+'''
+df = pd.read_sql_query(query10, connection)
+df.head()
+
+
 /* Q11: Produce a report of members and who recommended them in alphabetic surname, firstname order */
 
+query11 = '''SELECT surname ||', '|| firstname AS name, memid, recommendedby
+FROM Members ORDER BY surname, firstname'''
+df = pd.read_sql_query(query11, connection)
+df.head(31)
 
 /* Q12: Find the facilities with their usage by member, but not guests */
 
+query12 = '''SELECT m.surname ||', '|| m.firstname AS name, f.name AS facility
+FROM Members as m
+INNER JOIN Bookings as b
+ON m.memid = b.memid
+INNER JOIN Facilities as f
+ON b.facid = f.facid
+WHERE m.memid !=0
+GROUP BY name, facility 
+ORDER BY name, facility'''
+df = pd.read_sql_query(query12, connection)
+df.head(31)
 
 /* Q13: Find the facilities usage by month, but not guests */
+
+query13 = '''SELECT facid, SUM (slots) as slots, strftime('%m', starttime) AS month
+From Bookings 
+GROUP BY facid, month
+ORDER BY facid, month'''
+df = pd.read_sql_query(query13, connection)
+df.head(50)
 
