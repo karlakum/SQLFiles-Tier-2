@@ -144,6 +144,20 @@ ORDER BY total_cost DESC;
 Export the country club data from PHPMyAdmin, and connect to a local SQLite instance from Jupyter notebook 
 for the following questions.  
 
+# This is the connecting procedure on Jupyter
+import pandas as pd
+import numpy as np
+import sqlite3 as sql
+
+#create connection to database file
+database = 'sqlite_db_pythonsqlite.db'
+connection = sql.connect(database)
+
+#testing
+query = '''SELECT * FROM Facilities'''
+df = pd.read_sql_query(query, connection)
+df.head()
+
 QUESTIONS:
 /* Q10: Produce a list of facilities with a total revenue less than 1000.
 The output of facility name and total revenue, sorted by revenue. Remember
